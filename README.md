@@ -1,5 +1,5 @@
 
-This is an implementation of a unidirection ring [leader
+This is an implementation of a unidirectional ring [leader
 election](https://en.wikipedia.org/wiki/Leader_election) algorithm in
 Erlang. 
 
@@ -35,4 +35,4 @@ to all processes.
 To run the algorithm, we broadcast atomic value `start` to all processes with
 `B(start)`.
 
-We can run algorithm again, or terminate the processes with `B(quit)`.
+We can run the algorithm again, or terminate the processes with `B(quit)`.
