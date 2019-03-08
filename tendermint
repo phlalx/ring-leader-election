@@ -7,7 +7,7 @@ main([String]) ->
             N < 1 -> usage(), halt(1);
             true -> nil
         end,
-        {_S, B} = control : init(tendermint, N, topology : complete(N), fun(X) -> X + (N + 1) * rand : uniform(10 * N)  end),
+        {_S, B} = control : init(tendermint, N, topology : complete(N), fun(X) -> X - 1  end),
         B(start),
         receive
            false -> ok
