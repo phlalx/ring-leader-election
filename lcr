@@ -7,7 +7,8 @@ main([String]) ->
             N < 1 -> usage(), halt(1);
             true -> nil
         end,
-        {S, B} = control : init(lcr, N, topology : ring(N), fun(X) -> X + (N + 1) * rand : uniform(10 * N)  end),
+        {_S, B} = control : init(lcr, N, topology : ring(N),
+                                 fun(X) -> X + (N + 1) * rand : uniform(10 * N)  end),
         B(start),
         receive
            false -> ok
@@ -17,7 +18,7 @@ main([String]) ->
     end;
 main(_) -> usage().
 
-usage() -> io:format("usage: lcr_run n, with n >= 1\n"), halt(1).
+usage() -> io:format("usage: lcr n, with n >= 1\n"), halt(1).
 
 
 
