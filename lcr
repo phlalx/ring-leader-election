@@ -7,7 +7,7 @@ main([String]) ->
             N < 1 -> usage(), halt(1);
             true -> nil
         end,
-        {S, B} = control : init(lcr, N, topology : ring(N), fun(X) -> X + (N + 1) * random : uniform(10 * N)  end),
+        {S, B} = control : init(lcr, N, topology : ring(N), fun(X) -> X + (N + 1) * rand : uniform(10 * N)  end),
         B(start),
         receive
            false -> ok

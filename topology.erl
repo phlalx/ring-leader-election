@@ -32,7 +32,7 @@ ring(N) ->
 random_sublist([X]) -> [X];
 random_sublist([H  | T]) ->
   L = length([H | T]),
-  X = random : uniform(L),
+  X = rand : uniform(L),
   if
     (X >= L/2) -> random_sublist(T);
     true -> [H | random_sublist(T)]
