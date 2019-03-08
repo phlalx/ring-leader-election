@@ -1,29 +1,29 @@
-% a module is a collection of function 
+% a module is a collection of function
 -module(lcr).
-% list of exported function (ie. visible outside of the module), 
+% list of exported function (ie. visible outside of the module),
 % together with their arity
 -export([proc/1]).
 
 % a record is a like C struct
 % we define a record type "state" with two fields, uin, and neighbors
 % 0 and nil are default values used when a record is created (#state{})
-% nil is an "atom" (all ids starting with lowercase letters are atoms 
--record(state, 
-    { uin = 0, 
+% nil is an "atom" (all ids starting with lowercase letters are atoms
+-record(state,
+    { uin = 0,
       neighbors = nil
-    }). 
+    }).
 
 % definition of a (local) function taking two parameters U and Neighbors.
-% in Erlang, all variables identifiers start with an upper case letter 
+% in Erlang, all variables identifiers start with an upper case letter
 % Warning: this is error prone
 % notice the Prolog syntax: fun(X0, ... Xn) -> C1, C2, ..., Cm.
 % U is an arbitrary value
 % Neighbors of a list of process identifiers
-broadcast(U, Neighbors) -> 
+broadcast(U, Neighbors) ->
     % equivalent of printf function
     % self() returns the ID of the current process
     io:format("~w broadcasts value ~w to neighbors~w~n", [self(), U, Neighbors]),
-    % if X is an ID, X ! V sends the value V to X. 
+    % if X is an ID, X ! V sends the value V to X.
     % we can construct tuple with {   }
     % note the use of atom msg
     F = fun(X) -> X ! {msg, U} end,
@@ -39,7 +39,7 @@ broadcast(U, Neighbors) ->
 %
 % After a process is created, a global controler initializes its state before
 % the algorithm can be ran.  This is done in three steps by the "control : init"
-% function.  
+% function.
 %
 % 1 - sending of init_state message: State is now a state record 2 - sending of
 % { neighbors, N, Sender } messages. Recall that neighbors is just an atom that
@@ -55,13 +55,13 @@ proc(State) ->
     % notice the ";" to separate each cases.
     receive
         init_state -> proc(#state{});
-        { neighbors, N, Sender } -> 
+        { neighbors, N, Sender } ->
             io:format("~w is initialized with neighbors ~w~n", [self(), N]),
             Sender ! ok,
-            % State#state{neighbors = N} is a record equals to State 
+            % State#state{neighbors = N} is a record equals to State
             % but with neighbors field updated with N
             proc(State#state{neighbors = N}) ;
-        { init, U, Sender } -> 
+        { init, U, Sender } ->
             io:format("~w is initialized with UIN ~w~n", [self(), U]),
             Sender ! ok,
             proc(State#state{uin = U}) ;
@@ -71,8 +71,8 @@ proc(State) ->
             proc(State);
         { msg, U } ->
             io:format("~w received message ~w~n", [self(), U]),
-            if 
-                U > State#state.uin -> 
+            if
+                U > State#state.uin ->
                     broadcast(U, State#state.neighbors),
                     proc(State);
                 U == State#state.uin ->
@@ -80,7 +80,7 @@ proc(State) ->
                     proc(State);
                 U < State#state.uin -> proc(State)
             end;
-        quit -> 
+        quit ->
             io:format("~w says bye bye!~n", [self()])
     end,
     ok.

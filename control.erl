@@ -14,7 +14,7 @@ create(Module, N, Dict) ->
 broadcast(Dict, Signal) ->
   F = fun (_, [Y]) -> Y ! Signal end,
   dict : map (F, Dict),
-  ok. 
+  ok.
 
 % send a Signal to process Dict(I)
 send(Dict, I, Signal) ->
@@ -25,28 +25,28 @@ send(Dict, I, Signal) ->
 % wait for N ok signals
 syncr(0) -> ok;
 syncr(N) ->
-  receive 
+  receive
     ok ->
         % io : format("ok received ~n", [])
-        syncr(N-1) 
+        syncr(N-1)
   end.
 
 % init neighbors according to topology Graph
 init_topology(Dict, Graph) ->
   F = fun(X) -> [Res] = dict : fetch(X, Dict), Res end,
   IdToPId = fun(L) -> lists : map(F, L) end,
-  G = fun (I, [Y]) -> 
+  G = fun (I, [Y]) ->
       [LId] = dict : fetch(I, Graph),
       LPId = IdToPId(LId),
       Y ! {neighbors, LPId, self()} end,
   dict : map (G, Dict),
-  ok. 
+  ok.
 
 % init all states with unary function Signal : I -> term.
 init_state(Dict, Signal) ->
   F = fun (I, [Y]) -> Y ! {init, Signal(I), self()} end,
   dict : map (F, Dict),
-  ok. 
+  ok.
 
 % init all process according to the given topology and Signal : I -> term
 % returns a pair of function Send and Broadcast

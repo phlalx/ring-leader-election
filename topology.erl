@@ -1,6 +1,6 @@
 -module(topology).
 -export([dict_add/3, complete/1, ring/1, random/1, random_graph/1]).
--include_lib("eunit/include/eunit.hrl"). 
+-include_lib("eunit/include/eunit.hrl").
 
 sequence(0) -> [];
 sequence(N) -> [N | sequence(N-1)].
@@ -21,7 +21,7 @@ complete(N) ->
 
 ring(_, 0, D) -> D;
 ring(N, I, D) ->
-  Next = if I == N -> 1; true -> I + 1 end,  
+  Next = if I == N -> 1; true -> I + 1 end,
   ND = dict : append(I, [Next], D),
   ring(N, I-1, ND).
 
@@ -33,14 +33,14 @@ random_sublist([X]) -> [X];
 random_sublist([H  | T]) ->
   L = length([H | T]),
   X = random : uniform(L),
-  if 
+  if
     (X >= L/2) -> random_sublist(T);
     true -> [H | random_sublist(T)]
   end.
 
 random_graph_aux(_, 0, D) -> D;
 random_graph_aux(Sequence, I, D) ->
-  Val = random_sublist(lists : subtract(Sequence, [I])), 
+  Val = random_sublist(lists : subtract(Sequence, [I])),
   ND = dict : append(I,  Val, D),
   random_graph_aux(Sequence, I - 1, ND).
 
@@ -50,14 +50,14 @@ random_graph(N) ->
   random_graph_aux(S, N, D).
 
 dict_add(Key, Elt, Graph) ->
-  F = dict : find(Key, Graph), 
-  case F of 
-    {ok, [V]} -> 
+  F = dict : find(Key, Graph),
+  case F of
+    {ok, [V]} ->
       Res = lists : member(Elt, V),
-      if 
-	Res == true -> Graph; 
-	true -> 
-	 dict : append(Key, [Elt | V], dict : erase(Key, Graph)) 
+      if
+	Res == true -> Graph;
+	true ->
+	 dict : append(Key, [Elt | V], dict : erase(Key, Graph))
       end;
    _ -> dict : append(Key, [Elt], Graph)
   end.
@@ -68,7 +68,7 @@ sym(Graph) ->
     G = fun(Elt, AccList) ->
       AccListTmp = dict_add(Key, Elt, AccList),
       dict_add(Elt, Key, AccListTmp)
-    end,	
+    end,
     lists : foldl(G, AccIn, V)
   end,
   dict : fold(F, dict : new(), Graph).
